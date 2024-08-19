@@ -7,7 +7,7 @@ bd = SQLAlchemy()
 
 
 class Produto(bd.Model):
-    __tablename__ = 'produtos'
+    __tablename__ = 'tb_produtos'
   # nome_da coluna = variavel.Column( bd.Tipo_de_dado, constraint)
     id = bd.Column(bd.Integer, primary_key=True)
     nome = bd.Column(bd.String(200))  # -> VARCHAR(200)
