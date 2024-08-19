@@ -9,6 +9,10 @@ bd.init_app(app)
 app.register_blueprint(a, url_prefix='/auth')
 
 
+with app.app_context():
+    bd.create_all()
+
+
 @app.route('/', methods=['POST', 'GET'])
 def hello():
     return jsonify()
