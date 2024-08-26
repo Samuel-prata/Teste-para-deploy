@@ -29,6 +29,9 @@ def consultar_todos():
     # Versão atualizada
     produtos = bd.session.execute(bd.select(Produto)).scalars().all()
     dados_json = [produto.to_dict() for produto in produtos]
+    import os
+    print("url: ", os.getenv('DATABASE_URL_DEV'))
+    print("url: ", os.getenv('DATABASE_URL_PROD'))
     return jsonify(dados_json)
 
 

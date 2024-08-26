@@ -4,7 +4,7 @@ from app import bd
 
 
 class Produto(bd.Model):
-    __tablename__ = 'tb_produtos'
+    __tablename__ = 'produtos'
   # nome_da coluna = variavel.Column( bd.Tipo_de_dado, constraint)
     id = bd.Column(bd.Integer, primary_key=True)
     nome = bd.Column(bd.String(200))  # -> VARCHAR(200)
