@@ -1,24 +1,16 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, Blueprint
 from config import Config
-from models import bd, Produto
-from login import auth as a
+from produtos.models import bd, Produto
 
-app = Flask(__name__)
-app.config.from_object(Config)
-bd.init_app(app)
-app.register_blueprint(a, url_prefix='/auth')
+produto = Blueprint('produto', __name__, url_prefix='/produto')
 
 
-with app.app_context():
-    bd.create_all()
-
-
-@app.route('/', methods=['POST', 'GET'])
+@produto.route('/', methods=['POST', 'GET'])
 def hello():
     return jsonify()
 
 
-@app.route('/registrar', methods=['POST'])
+@produto.route('/registrar', methods=['POST'])
 def registrar():
     dados = request.get_json()
     novo_produto = Produto(nome=dados['nome'], categoria=dados['categoria'],
@@ -32,7 +24,7 @@ def registrar():
         return f'Erro ao cadastrar produto', 400
 
 
-@app.route('/consultar')
+@produto.route('/consultar')
 def consultar_todos():
     # Versão atualizada
     produtos = bd.session.execute(bd.select(Produto)).scalars().all()
@@ -40,7 +32,7 @@ def consultar_todos():
     return jsonify(dados_json)
 
 
-@app.route('/consultar/<int:id>')
+@produto.route('/consultar/<int:id>')
 def get_id(id):
     select_query = bd.select(Produto).where(Produto.id == id)
     produto = bd.session.execute(select_query).scalar_one_or_none()
@@ -51,7 +43,7 @@ def get_id(id):
         return jsonify(produto.to_dict()), 200
 
 
-@app.route('/atualizar/<int:id>', methods=['PUT'])
+@produto.route('/atualizar/<int:id>', methods=['PUT'])
 def atualizar(id):
     produto = encontrar(id)
     dados_atualizados = request.get_json()
@@ -69,10 +61,9 @@ def atualizar(id):
         return f' Erro ao cadastrar', 400
 
 
-@app.route('/deletar/<int:id>', methods=['DELETE'])
+@produto.route('/deletar/<int:id>', methods=['DELETE'])
 def deletar(id):
     produto = encontrar(id)
-
     try:
         bd.session.delete(produto)
         bd.session.commit()
@@ -88,10 +79,6 @@ def encontrar(id):
     return produto
 
 
-@app.errorhandler(404)
+@produto.errorhandler(404)
 def pagina_nao_encontrada(erro):
     return render_template('erro.html'), 404
-
-
-if __name__ == '__main__':
-    app.run(debug=True)

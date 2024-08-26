@@ -1,5 +1,5 @@
 
-from models import bd, User
+from app import bd
 from flask import request, jsonify, render_template, Blueprint
 
 auth = Blueprint('auth', __name__)
